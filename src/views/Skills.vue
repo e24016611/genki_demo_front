@@ -49,7 +49,7 @@
             <img src="../assets/images/wenhao.png" alt="">
         </div>
         <div class="skills-desc animate__animated animate__backInLeft">
-            Acquire skills to explore opportunities on Chain
+            Acquire skills to explore opportunities on Chain And Earn Reward
         </div>
         <div class="skills-list">
             <ul>
