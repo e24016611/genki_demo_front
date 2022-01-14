@@ -147,7 +147,7 @@
             async isUser(account){
                 let res = await getUser(account);
                 console.log(res)
-                if(res.successed && res.errorcode==0){
+                if(res.successed && res.errcode==0){
                     this.user = res.data
                 }else{
                     this.createUser(account)
@@ -175,7 +175,7 @@
                     referral_code:this.code,
                 });
 
-                if(res.successed && res.errorcode==0){
+                if(res.successed && res.errcode==0){
                     alert('success')
                 }else{
                     console.log('error')

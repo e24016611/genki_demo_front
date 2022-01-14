@@ -150,7 +150,7 @@
             async isUser(account){
                 let res = await getUser(account);
                 console.log(res)
-                if(res.successed && res.errorcode==0){
+                if(res.successed && res.errcode==0){
                     this.user = res.data
                 }else{
                     this.createUser(account)
@@ -178,7 +178,7 @@
                     referral_code:this.code,
                 });
 
-                if(res.successed && res.errorcode==0){
+                if(res.successed && res.errcode==0){
                     alert('success')
                 }else{
                     console.log('error')
@@ -187,7 +187,7 @@
             // 获取推荐码
             async getRelations(){
                 let res = await getRelation(this.code);
-                if(res.successed && res.errorcode==0){
+                if(res.successed && res.errcode==0){
                     this.invite = res.data
                 }else{
                     console.log('error')
