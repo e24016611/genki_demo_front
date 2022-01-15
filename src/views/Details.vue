@@ -128,12 +128,20 @@
                     this.connect()
                     return false
                 }
+                if(item.completed){
+                    this.$message({
+                        message: 'The task has been completed',
+                        type: 'warning'
+                    })
+                    return false
+                }
                 let res = await getTaskStart(id,{
                     address:this.user.address,
                 });
-                if(res.errcode == 0 && res.successed){
+                if(res.errcode == 0 && res.successed && !item.completed){
                     window.location.href = item.redirect_url
                 }
+
             }
         },
         async mounted() {
