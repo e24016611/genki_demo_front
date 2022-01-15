@@ -109,7 +109,7 @@
     export default {
         data(){
             return{
-                imgUrl:"http://www.baidu.com/",
+                imgUrl:"",
                 count: 0,
                 provider: {},
                 web3: "",
@@ -187,7 +187,8 @@
                 let res = await getUser(account);
                 console.log(res)
                 if(res.successed && res.errcode==0){
-                    this.user = res.data
+                    this.user = res.data;
+                    this.$store.commit('SET_USERS', this.user);
                 }else{
                     this.createUser(account)
                 }

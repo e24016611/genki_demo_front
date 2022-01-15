@@ -4,6 +4,10 @@ import router from './router'
 import store from './store'
 // import "./assets/index.css"
 import animated from 'animate.css'
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+
+Vue.use(ElementUI);
 Vue.use(animated)
 Vue.config.productionTip = false
 

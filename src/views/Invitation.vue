@@ -49,7 +49,7 @@
                Connect with your Enlightener and Start the Journey
            </h1>
            <div class="invite-main">
-               <input type="text" class="address-input" placeholder="Input your enlighterner’s referral code to show your gratitude">
+               <input type="text" v-model="code" class="address-input" placeholder="Input your enlighterner’s referral code to show your gratitude">
                 <div class="btn-connect" @click="inputRecommend">
                     Binding
                 </div>
@@ -70,7 +70,7 @@
     export default {
         data(){
             return{
-                imgUrl:"http://www.baidu.com/",
+                imgUrl:"/",
                 count: 0,
                 provider: {},
                 web3: "",
@@ -79,7 +79,8 @@
                 contractAddress: "0x9518bC609c7b57079d0A0E090FaC1a9Dc1c2667a",
                 abi: "",
                 skill:[],
-                user:{}
+                user:{},
+                code:''
             }
         },
         components:{
@@ -170,15 +171,23 @@
             },
             // 推荐码
             async inputRecommend(){
+                if(Object.keys(this.user).length == 0 && !this.user.address){
+                    this.connect();
+                    return false
+                }
+                if(!this.code){
+                     this.$message.error('Please enter the invitation code');
+                     return false
+                }
                 let res = await postRelation({
                     address:this.user.address,
                     referral_code:this.code,
                 });
 
                 if(res.successed && res.errcode==0){
-                    alert('success')
+                    this.$message.success('Invitation succeeded');
                 }else{
-                    console.log('error')
+                    this.$message.error('Invitation failed');
                 }
             },
         }

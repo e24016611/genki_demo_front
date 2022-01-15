@@ -65,7 +65,7 @@
     export default {
         data(){
             return{
-                imgUrl:"http://www.baidu.com/",
+                imgUrl:"/",
                 count: 0,
                 provider: {},
                 web3: "",
@@ -113,7 +113,7 @@
                     var Url = document.getElementById("invite");
                     Url.select(); // 选择对象
                     document.execCommand("Copy"); // 执行浏览器复制命令
-                    alert("已复制好，可贴粘。");
+                    this.$message.success('Please paste it');
             },
             async getSkillList(){
                let res = await getSkill();

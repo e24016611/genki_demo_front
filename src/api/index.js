@@ -23,10 +23,11 @@ export function getTaskId (id) {
     })
 }
 // 开始task
-export function getTaskStart (id) {
+export function getTaskStart (id, data) {
     return baseAxios({
         url: `api/task/${id}/start`,
         method: 'post',
+        data
     })
 }
 // 查询user
@@ -51,9 +52,10 @@ export function getRelation (address) {
     })
 }
 // 建立推荐关系
-export function postRelation () {
+export function postRelation (data) {
     return baseAxios({
         url: `api/referral`,
         method: 'post',
+        data
     })
 }

@@ -37,7 +37,7 @@
                 </div>
                 <div class="list-btn">
                     <span @click="goProject(item.id)">Details</span>
-                    <span class="active" @click="startTask(item.id)">Start</span>
+                    <span class="active" @click="startTask(item.id,item)">Start</span>
                 </div>
             </li>
         </ul>
@@ -46,7 +46,10 @@
 </template>
 
 <script>
-    import {getSkillId,getTaskStart} from '../api/index';
+    import {getSkillId,getTaskStart,getUser,getAddUser} from '../api/index';
+    import { mapState } from "vuex";
+    import detectEthereumProvider from "@metamask/detect-provider";
+    import Web3 from "web3";
     export default {
         data(){
             return {
@@ -57,10 +60,58 @@
                     title:"",
                     logo:"",
                     tasks:[]
-                }
+                },
+                count: 0,
+                provider: {},
+                web3: "",
+                currentAccount: "",
+                listings: [],
+                contractAddress: "0x9518bC609c7b57079d0A0E090FaC1a9Dc1c2667a",
+                abi: "",
+                user:{}
             }
         },
+          computed: {
+            ...mapState({
+                users: (state) => state.users,
+            }),
+        },
         methods:{
+            handleAccountsChanged(accounts) {
+                if (accounts.length === 0) {
+                    console.log("Please connect to MetaMask.", accounts);
+                } else if (accounts[0] !== this.currentAccount) {
+                    this.currentAccount = this.web3.utils.toChecksumAddress(accounts[0]);
+                    this.isUser(this.currentAccount)
+                }
+            },
+            connect() {
+                this.provider
+                .request({ method: "eth_requestAccounts" })
+                .then(this.handleAccountsChanged)
+                .catch((err) => {
+                    if (err.code === 4001) {
+                    console.log("Please connect to MetaMask.");
+                    } else {
+                    console.error(err);
+                    }
+                });
+                console.log("connected with account " + this.currentAccount);
+            },
+            async isUser(account){
+                let res = await getUser(account);
+                console.log(res)
+                if(res.successed && res.errcode==0){
+                    this.user = res.data;
+                    this.$store.commit('SET_USERS', this.user);
+                }else{
+                    this.createUser(account)
+                }
+            },
+            async createUser(account){
+                let res = await getAddUser(account);
+                this.user = res.data;
+            },
             async getDetails(id){
                 let res = await getSkillId(id);
                 if(res.successed){
@@ -72,12 +123,39 @@
                  this.$router.push({path:'/project',query:{id:id}})
             },
             // 开始任务
-            async startTask(id){
-                let res = await getTaskStart(id);
-                console.log(res)
+            async startTask(id,item){
+                if(Object.keys(this.users).length == 0){
+                    this.connect()
+                    return false
+                }
+                let res = await getTaskStart(id,{
+                    address:this.user.address,
+                });
+                if(res.errcode == 0 && res.successed){
+                    window.location.href = item.redirect_url
+                }
             }
         },
-        mounted(){
+        async mounted() {
+            this.provider = await detectEthereumProvider();
+            console.log(this.provider);
+            console.log(Web3.givenProvider);
+            if (this.provider) {
+            this.web3 = new Web3(Web3.givenProvider);
+            await this.provider
+                .request({ method: "eth_accounts" })
+                .then(this.handleAccountsChanged)
+                .catch((err) => {
+                console.error(err);
+                });
+            if (this.provider.chainId === "0x1") {
+                console.log('conneting')
+            }
+            } else {
+            console.log("Please install MetaMask!");
+            }
+            console.log(this.web3);
+
             this.getDetails(this.id)
         }
     }
