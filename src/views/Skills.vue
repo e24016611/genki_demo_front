@@ -154,7 +154,8 @@
             async getSkillList(){
                let res = await getSkill();
                if(res.successed){
-                this.skill = res.data
+                this.skill = res.data;
+                this.$store.commit('SET_TASKS', this.skill);
                }
                console.log(this.skill)
             },

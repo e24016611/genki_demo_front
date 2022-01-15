@@ -5,11 +5,15 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    users: ""
+    users: "",
+    tasks: ""
   },
   mutations: {
     SET_USERS (state, value) {
       state.users = value;
+    },
+    SET_TASKS (state, value) {
+      state.tasks = value;
     }
   },
   actions: {

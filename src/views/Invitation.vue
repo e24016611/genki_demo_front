@@ -66,7 +66,8 @@
     import {getSkill,getSkillId,getUser,getAddUser,postRelation} from '../api/index';
     import detectEthereumProvider from "@metamask/detect-provider";
     import Web3 from "web3";
-    import helloWorld from '../components/HelloWorld.vue'
+    import helloWorld from '../components/HelloWorld.vue';
+    import { mapState } from "vuex";
     export default {
         data(){
             return{
@@ -85,6 +86,11 @@
         },
         components:{
             helloWorld
+        },
+        computed: {
+            ...mapState({
+                tasks: (state) => state.tasks,
+            }),
         },
         created(){
             this.getSkillList()
@@ -166,8 +172,8 @@
                 var subStr = subStr1 + "···" + subStr2 ;
                 return subStr;
             },
-            goDetails(id){
-                this.$router.push({path:'/details',query:{id:"d290f1ee-6c54-4b01-90e6-d701748f0851"}})
+            goDetails(){
+                this.$router.push({path:'/details',query:{id: this.skill[0].id}})
             },
             // 推荐码
             async inputRecommend(){

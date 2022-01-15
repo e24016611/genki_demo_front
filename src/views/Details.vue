@@ -71,7 +71,7 @@
                 user:{}
             }
         },
-          computed: {
+        computed: {
             ...mapState({
                 users: (state) => state.users,
             }),
