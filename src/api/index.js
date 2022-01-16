@@ -9,9 +9,9 @@ export function getSkill (params) {
     })
 }
 // 获取指定skill
-export function getSkillId (id) {
+export function getSkillId (id, address) {
     return baseAxios({
-        url: `api/skill/${id}`,
+        url: `api/skill/${id}?address=${address}`,
         method: 'get',
     })
 }

@@ -112,8 +112,8 @@
                 let res = await getAddUser(account);
                 this.user = res.data;
             },
-            async getDetails(id){
-                let res = await getSkillId(id);
+            async getDetails(id,address){
+                let res = await getSkillId(id,address);
                 if(res.successed){
                     this.details = res.data
                 }
@@ -164,7 +164,7 @@
             }
             console.log(this.web3);
 
-            this.getDetails(this.id)
+            this.getDetails(this.id,this.user.address)
         }
     }
 </script>
