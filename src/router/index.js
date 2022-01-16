@@ -30,7 +30,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/Links.vue')
   },
   {
-    path: '/invite',
+    path: '/invite/:id',
     name: 'Invite',
     component: () => import(/* webpackChunkName: "about" */ '../views/Invitation.vue')
   }
