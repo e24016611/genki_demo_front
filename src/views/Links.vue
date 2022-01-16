@@ -46,7 +46,7 @@
     <div class="skills">
        <div class="links">
            <!-- <input v-model="code" type="text" class="address-input" placeholder="Connect address to generate your own referal code"> -->
-           <input v-model="this.user.referral_code" type="text" class="address-input" placeholder="Connect address to generate your own referal code" id="invite">
+           <input v-model="host" type="text" class="address-input" placeholder="Connect address to generate your own referal code" id="invite">
            <!-- <div class="btn-connect" @click="getRelations"> -->
             <div class="btn-connect" @click="copyLink">
                <!-- Connect -->
@@ -76,7 +76,8 @@
                 skill:[],
                 user:{},
                 code:'',
-                invite:""
+                invite:"",
+                host:""
             }
         },
         components:{
@@ -151,7 +152,8 @@
                 let res = await getUser(account);
                 console.log(res)
                 if(res.successed && res.errcode==0){
-                    this.user = res.data
+                    this.user = res.data;
+                    this.host = window.location.host +'/'+ this.user.referral_url;
                 }else{
                     this.createUser(account)
                 }
@@ -159,6 +161,7 @@
             async createUser(account){
                 let res = await getAddUser(account);
                 this.user = res.data;
+                this.host = window.location.host +'/'+ this.user.referral_url;
             },
             // 截取字符串
             getSubStr ( str){

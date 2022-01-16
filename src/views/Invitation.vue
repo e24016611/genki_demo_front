@@ -81,7 +81,7 @@
                 abi: "",
                 skill:[],
                 user:{},
-                code:''
+                code:'',
             }
         },
         components:{
@@ -94,6 +94,7 @@
         },
         created(){
             this.getSkillList()
+            this.code = this.$route.params.id;
         },
         async mounted() {
             this.provider = await detectEthereumProvider();
