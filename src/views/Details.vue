@@ -164,7 +164,7 @@
             }
             console.log(this.web3);
 
-            this.getDetails(this.id,this.user.address)
+            this.getDetails(this.id,this.currentAccount)
         }
     }
 </script>
