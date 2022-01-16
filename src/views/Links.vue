@@ -153,7 +153,7 @@
                 console.log(res)
                 if(res.successed && res.errcode==0){
                     this.user = res.data;
-                    this.host = window.location.host +'/'+ this.user.referral_url;
+                    this.host = window.location.origin +'/'+ this.user.referral_url;
                 }else{
                     this.createUser(account)
                 }
