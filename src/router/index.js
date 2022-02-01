@@ -33,6 +33,23 @@ const routes = [
     path: '/invite/:id',
     name: 'Invite',
     component: () => import(/* webpackChunkName: "about" */ '../views/Invitation.vue')
+  },
+  {
+    path: '/quest',
+    name: 'Quest',
+    component: () => import(/* webpackChunkName: "about" */ '../views/Quest.vue')
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: () => import(/* webpackChunkName: "about" */ '../views/Profile.vue'),
+    children: [
+      {
+        path: 'userInfo',
+        name: 'userInfo',
+        component: () => import(/* webpackChunkName: "about" */ '../views/profile/UserInfo.vue')
+      }
+    ]
   }
 ]
 
