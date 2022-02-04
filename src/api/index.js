@@ -59,3 +59,17 @@ export function postRelation (data) {
         data
     })
 }
+// 查询任务完成纪录
+export function getDapp (address) {
+    return baseAxios({
+        url: `/api/history/dapp/${address}`,
+        method: 'get'
+    })
+}
+// 查询任务完成纪录
+export function getReferral (address) {
+    return baseAxios({
+        url: `/api/history/referral/${address}`,
+        method: 'get'
+    })
+}

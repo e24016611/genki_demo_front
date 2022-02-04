@@ -5,11 +5,13 @@
                 <img src="@/assets/logo.png" alt="" class="user-head">
             </div>
             <div class="user-right">
-                <div class="user-address">0xafBc06C22aA54c03352C370767560b7B0524F996</div>
+                <div class="user-address">
+                    {{currentAccount}}
+                </div>
                 <div class="user-show">
-                    <span>Rank: xxx</span>
-                    <span>Total Points: xx</span>
-                    <span>Referrals: xxx</span>
+                    <span>Rank: {{relation.rank}}</span>
+                    <span>Total Points: {{relation.total_points}}</span>
+                    <span>Referrals: {{relation.referrals}}</span>
                 </div>
             </div>
         </div>
@@ -26,28 +28,28 @@
                </div>
                <div class="user-history" v-if="current==1">
                    <div class="btn-group">
-                        <button>Dapp</button>
-                        <button>Referral</button>
-                        <button>Time Frame</button>
+                        <el-button type="primary" @click="getDappFun">Dapp</el-button>
+                        <el-button type="primary" @click="getReferralFun">Referral</el-button>
+                        <el-button type="primary">Time Frame</el-button>
                    </div>
                     <el-table
                     :data="tableData"
                     style="width: 100%">
                     <el-table-column
-                        prop="date"
-                        label="时间">
+                        prop="datetime"
+                        label="date">
                     </el-table-column>
                     <el-table-column
-                        prop="hash"
-                        label="hash">
+                        prop="address"
+                        label="address">
                     </el-table-column>
                     <el-table-column
-                        prop="complete"
-                        label="complete">
+                        prop="task"
+                        label="task">
                     </el-table-column>
                     <el-table-column
-                        prop="channel"
-                        label="channel">
+                        prop="event_type"
+                        label="event_type">
                     </el-table-column>
                     </el-table>
                </div>
@@ -57,6 +59,10 @@
 </template>
 
 <script>
+    import {getSkill,getSkillId,getUser,getAddUser,postRelation,getRelation,getDapp,getReferral} from '../../api/index';
+    import detectEthereumProvider from "@metamask/detect-provider";
+    import Web3 from "web3";
+    import { mapState } from "vuex";
     export default {
         data() {
             return {
@@ -68,16 +74,145 @@
                     "NTF",
                     "Web3",
                 ],
-                tableData:[{
-                    date:"2022-01-30",
-                    hash:'0xafBc06C22aA54c03352C370767560b7B0524F996',
-                    complete:true,
-                    channel:'ETH'
-                }]
+                tableData:[],
+                count: 0,
+                provider: {},
+                web3: "",
+                currentAccount: "",
+                listings: [],
+                contractAddress: "0x9518bC609c7b57079d0A0E090FaC1a9Dc1c2667a",
+                abi: "",
+                skill:[],
+                user:{},
+                relation:''
             }
         },
         components: {
         },
+        created(){
+            this.getSkillList()
+        },
+        watch:{
+            current:{
+                handler (val) {   // 当 current 发生变化时   
+                    console.log(val) 
+                    if(val == 1){
+                        this.getDappFun()
+                    }
+                },
+                immediate: true
+            }
+        },
+        async mounted() {
+            this.provider = await detectEthereumProvider();
+            console.log(this.provider);
+            console.log(Web3.givenProvider);
+            if (this.provider) {
+            this.web3 = new Web3(Web3.givenProvider);
+            await this.provider
+                .request({ method: "eth_accounts" })
+                .then(this.handleAccountsChanged)
+                .catch((err) => {
+                console.error(err);
+                });
+            if (this.provider.chainId === "0x1") {
+                console.log('conneting')
+            }
+            } else {
+            console.log("Please install MetaMask!");
+            }
+            console.log(this.web3);
+        },
+        methods:{
+            // getReferral
+            async getReferralFun(){
+                let res = await getReferral(this.currentAccount)
+                if(res.successed && res.errcode==0){
+                    this.tableData = [];
+                    this.tableData.push(res.data)
+                    console.log(this.tableData)
+                }
+            },
+            // getDapp
+            async getDappFun(){
+                let res = await getDapp(this.currentAccount)
+                if(res.successed && res.errcode==0){
+                    this.tableData = [];
+                    this.tableData.push(res.data)
+                    console.log(this.tableData)
+                }
+            },
+            // 获取人员相关信息
+            async getRelations(){
+                let res = await getRelation(this.currentAccount);
+                if(res.successed && res.errcode==0){
+                    this.relation = res.data
+                    console.log('relation',this.relation)
+                }else{
+                    console.log('error')
+                }
+            },
+            goLinks(){
+                this.$router.push('/links')
+            },
+            async getSkillList(){
+               let res = await getSkill();
+               if(res.successed){
+                this.skill = res.data
+               }
+               console.log(this.skill)
+            },
+            async getSkillId(id){
+                let res = await getSkillId(id);
+                this.skill = res
+            },
+            handleAccountsChanged(accounts) {
+                if (accounts.length === 0) {
+                    console.log("Please connect to MetaMask.", accounts);
+                } else if (accounts[0] !== this.currentAccount) {
+                    this.currentAccount = this.web3.utils.toChecksumAddress(accounts[0]);
+                    this.isUser(this.currentAccount)
+                    this.getRelations();
+                }
+            },
+            connect() {
+                this.provider
+                .request({ method: "eth_requestAccounts" })
+                .then(this.handleAccountsChanged)
+                .catch((err) => {
+                    if (err.code === 4001) {
+                    console.log("Please connect to MetaMask.");
+                    } else {
+                    console.error(err);
+                    }
+                });
+                console.log("connected with account " + this.currentAccount);
+            },
+            async isUser(account){
+                let res = await getUser(account);
+                console.log(res)
+                if(res.successed && res.errcode==0){
+                    this.user = res.data
+                }else{
+                    this.createUser(account)
+                }
+            },
+            async createUser(account){
+                let res = await getAddUser(account);
+                this.user = res.data;
+            },
+            // 截取字符串
+            getSubStr ( str){
+                if(!str) return;
+                var subStr1 = str.substr( 0, 5);
+                var subStr2 = str.substr( str.length- 5, 2);
+                var subStr = subStr1 + "···" + subStr2 ;
+                return subStr;
+            },
+            goDetails(){
+                this.$router.push({path:'/details',query:{id: this.skill[0].id}})
+            },
+        }
     }
 </script>
 
@@ -120,18 +255,19 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    margin-right: 30px;
 }
 .btn-group{
     margin: 15px 0;
 }
-.btn-group>button{
+/* .btn-group>button{
     padding: 8px 12px;
     margin-right: 15px;
     border-radius: 5px;
     border: 0;
     outline: 0;
     cursor: pointer;
-}
+} */
 .user-bottom h2{
     margin-left: 80px;
     cursor: pointer;
