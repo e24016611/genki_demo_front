@@ -128,18 +128,14 @@
             async getReferralFun(){
                 let res = await getReferral(this.currentAccount)
                 if(res.successed && res.errcode==0){
-                    this.tableData = [];
-                    this.tableData.push(res.data)
-                    console.log(this.tableData)
+                    this.tableData = res.data;
                 }
             },
             // getDapp
             async getDappFun(){
                 let res = await getDapp(this.currentAccount)
                 if(res.successed && res.errcode==0){
-                    this.tableData = [];
-                    this.tableData.push(res.data)
-                    console.log(this.tableData)
+                    this.tableData = res.data;
                 }
             },
             // 获取人员相关信息

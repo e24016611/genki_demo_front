@@ -62,14 +62,35 @@ export function postRelation (data) {
 // 查询任务完成纪录
 export function getDapp (address) {
     return baseAxios({
-        url: `/api/history/dapp/${address}`,
+        url: `/api/user/${address}/history/dapp`,
         method: 'get'
     })
 }
 // 查询任务完成纪录
 export function getReferral (address) {
     return baseAxios({
-        url: `/api/history/referral/${address}`,
+        url: `/api/user/${address}/history/referral`,
+        method: 'get'
+    })
+}
+// /api/quests/
+export function getQuests () {
+    return baseAxios({
+        url: `/api/quests/`,
+        method: 'get'
+    })
+}
+// /api/quests/{quest_id}/
+export function getQuestsId () {
+    return baseAxios({
+        url: `/api/quests/${quest_id}`,
+        method: 'get'
+    })
+}
+// /api/quests/{quest_id}/history
+export function getQuestsIdHistory () {
+    return baseAxios({
+        url: `/api/quests/${quest_id}/history`,
         method: 'get'
     })
 }
