@@ -8,42 +8,53 @@
             </div>
             <div class="project-info">
                 <div class="project-logo">
-                    <img src="../assets/logo.png" alt="">
+                    <img :src="quest.logo" alt="">
                 </div>
                 <div class="project-intro">
                     <h3>Quest</h3>
                     <div class="intro-span">
-                        <span>Impression: xx</span>
-                        <span>Total Participants: xx</span>
-                        <span>Referrals: xxx</span>
+                        <span>Impression: {{quest.impression}}</span>
+                        <span>Total Participants: {{quest.participants}}</span>
+                        <span>Referrals: {{quest.referrals}}</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="blocks">
-        <div class="blocks-chart"></div>
-        <div class="blocks-chart"></div>
+        <div class="blocks-chart">
+            <chart1></chart1>
+        </div>
+        <div class="blocks-chart">
+            <chart2></chart2>
+        </div>
     </div>
     <div class="quest-table">
         <el-table
         :data="tableData"
         style="width: 100%">
         <el-table-column
-            prop="date"
-            label="时间">
+            prop="datetime"
+            label="Time/Txs">
+            <template slot-scope="scope">
+                {{scope.row.datetime}}<br />{{scope.row.txs}}
+            </template>
         </el-table-column>
         <el-table-column
-            prop="hash"
-            label="hash">
+            prop="address"
+            label="User">
         </el-table-column>
         <el-table-column
-            prop="complete"
-            label="complete">
+            prop="retention_7"
+            label="7day retention">
         </el-table-column>
         <el-table-column
-            prop="channel"
-            label="channel">
+            prop="retention_14"
+            label="14 day retention">
+        </el-table-column>
+        <el-table-column
+            prop="retention_30"
+            label="30 day retention">
         </el-table-column>
         </el-table>
     </div>
@@ -51,19 +62,46 @@
 </template>
 
 <script>
+import chart1 from "./charts/Charts1.vue";
+import chart2 from "./charts/Charts2.vue";
+
+import {getQuests,getQuestsId,getQuestsIdHistory} from '../api/index';
     export default {
         data() {
-            return {
+            return {        
                 tableData:[{
                     date:"2022-01-30",
                     hash:'0xafBc06C22aA54c03352C370767560b7B0524F996',
                     complete:true,
                     channel:'ETH'
-                }]
+                }],
+                quest:[]
             }
         },
-       components: {
-       }, 
+        created() {
+            this.getQuestsFun();
+        },
+        components: {
+            chart1,
+            chart2
+        }, 
+        methods:{
+            async getQuestsFun(){
+                let res = await getQuests();
+                if(res.successed && res.errcode==0){
+                    this.quest = res.data[0];
+
+                    let res2 = await this.getQuestsIdHistoryFun(this.quest.id);
+                    console.log(res2);
+                }
+            },
+            async getQuestsIdHistoryFun(id){
+                let res = await getQuestsIdHistory(id);
+                if(res.successed && res.errcode==0){
+                    this.tableData = res.data;
+                }
+            }
+        }
     }
 </script>
 
@@ -117,13 +155,13 @@
 .blocks{
     min-height: 200px;
     margin-top: 20px;
+    margin-bottom: 20px;
     display: flex;
     justify-content: space-around;
 }
 .blocks-chart{
     width: 400px;
-    height: 175px;
-    border: 1px solid #ccc;
+    height: 400px;
 }
 .quest-table{
     width: 80%;

@@ -81,14 +81,14 @@ export function getQuests () {
     })
 }
 // /api/quests/{quest_id}/
-export function getQuestsId () {
+export function getQuestsId (quest_id) {
     return baseAxios({
         url: `/api/quests/${quest_id}`,
         method: 'get'
     })
 }
 // /api/quests/{quest_id}/history
-export function getQuestsIdHistory () {
+export function getQuestsIdHistory (quest_id) {
     return baseAxios({
         url: `/api/quests/${quest_id}/history`,
         method: 'get'
