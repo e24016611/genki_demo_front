@@ -6,7 +6,7 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    name: 'Skills',
+    name: 'Home',
     component: () => import(/* webpackChunkName: "about" */ '../views/Skills.vue')
   },
   {
@@ -45,7 +45,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/Profile.vue'),
     children: [
       {
-        path: 'userInfo',
+        path: 'userInfo/:currentAccount',
         name: 'userInfo',
         component: () => import(/* webpackChunkName: "about" */ '../views/profile/UserInfo.vue')
       }

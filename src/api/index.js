@@ -73,6 +73,7 @@ export function getReferral (address) {
         method: 'get'
     })
 }
+
 // /api/quests/
 export function getQuests () {
     return baseAxios({

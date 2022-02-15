@@ -20,6 +20,10 @@
                     </ul>
                 </nav>
             </div>
+            <div class="search-wrap">
+                <font-awesome-icon icon="search" :style="{ color: '#F2C93F' }" @click="handleSearch" />
+                <input class="search-input" v-model="searchAccount" placeholder="Search by address or quest" @keyup.enter="handleSearch" />
+            </div>
             <div class="header-right">
                 <div class="right-button" v-if="!currentAccount" @click="connect()">
                   <div class="btn-des connect">
@@ -118,7 +122,8 @@
                 contractAddress: "0x9518bC609c7b57079d0A0E090FaC1a9Dc1c2667a",
                 abi: "",
                 skill:[],
-                user:{}
+                user:{},
+                searchAccount: ""
             }
         },
         components:{
@@ -208,6 +213,11 @@
             },
             goDetails(id){
                 this.$router.push({path:'/details',query:{id:id}})
+            },
+            handleSearch(e) {
+                e.preventDefault();
+                console.log(this.searchAccount);
+                this.$router.push(`/profile/userinfo/${this.searchAccount}`);
             }
         }
     }
@@ -237,10 +247,7 @@
         -webkit-flex-direction: row;
         -ms-flex-direction: row;
         flex-direction: row;
-        -webkit-padding-start: 40px;
-        padding-inline-start: 40px;
-        -webkit-padding-end: 40px;
-        padding-inline-end: 40px;
+        margin: 0 40px;
     }
     .header-left {
         display: -webkit-box;
@@ -257,7 +264,7 @@
     }
 
     .header-left .logo{
-    width: 74.8px;
+    width: 30px;
     height: 95px;
     margin-right: 67.2px;
     }
@@ -314,33 +321,32 @@
     font-weight: 600;
     }
     .header-right {
-    margin-top: 0px;
-    /* -webkit-margin-end: 0px;
-    margin-inline-end: 0px;
-    margin-bottom: 0px;
-    -webkit-margin-start: 340px;
-    margin-inline-start: 340px; */
-    overflow: hidden;
+        flex: 0;
+        display: flex;
+        flex-direction: row;
+        margin-top: 0px;
+        width: 100%;
     }
-    .right-button{
-    width: 184px;
-    height: 67px;
-    background: #54A09D;
-    border-radius: 15px;
-    float: left;
-    cursor: pointer;
+    .right-button {
+        width: 184px;
+        height: 67px;
+        background: #54A09D;
+        margin: 0 5px;
+        border-radius: 15px;
+        float: left;
+        cursor: pointer;
     }
     .right-button img{
-    padding: 15px;
-    float: left;
-    width: 36px;
-    height: 36px;
-    text-align: left;
+        padding: 15px;
+        float: left;
+        width: 36px;
+        height: 36px;
+        text-align: left;
     }
     .right-button .btn-des {
-    float: left;
-    text-align: left;
-    margin-top: 13px;
+        float: left;
+        text-align: left;
+        margin-top: 13px;
     }
     .btn-des.connect{
         width: 100%;
@@ -366,9 +372,6 @@
     letter-spacing: 0;
     line-height: 20px;
     font-weight: 400;
-    }
-    .header-right :first-child.right-button{
-    margin-right: 29px;
     }
     .skills{
         margin: 52px 85px;
@@ -476,5 +479,24 @@
         letter-spacing: 0;
         line-height: 20px;
         font-weight: 400;
+    }
+  .search-wrap {
+        width: 100%;
+        height: 67px;
+        padding: 0 12px;
+        margin: 0 20px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        border-radius: 15px;
+        background-color: #fff;
+        border: 1px solid #e1e5f2
+    }
+    .search-input {
+        width: 100%;
+        margin: 10px;
+        outline: none;
+        border: none;
+        background: transparent;
     }
 </style>
