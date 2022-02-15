@@ -17,12 +17,12 @@
         </div>
         <div class="user-bottom">
            <h2>
-               <span @click="current=0" :class="{active:current==0}">NTFS</span>
+               <span @click="current=0" :class="{active:current==0}">NFTs</span>
                <span @click="current=1" :class="{active:current==1}">History</span>
            </h2>
            <div class="bottom-content">
-               <div class="user-ntfs" v-if="current==0">
-                    <span v-for="(item,index) in ntfs" :key="index" class="ntfs">
+               <div class="user-nfts" v-if="current==0">
+                    <span v-for="(item,index) in nfts" :key="index" class="nfts">
                        {{item}}
                     </span>
                </div>
@@ -33,24 +33,24 @@
                         <el-button type="primary">Time Frame</el-button>
                    </div>
                     <el-table
-                    :data="tableData"
-                    style="width: 100%">
-                    <el-table-column
-                        prop="datetime"
-                        label="date">
-                    </el-table-column>
-                    <el-table-column
-                        prop="address"
-                        label="address">
-                    </el-table-column>
-                    <el-table-column
-                        prop="task"
-                        label="task">
-                    </el-table-column>
-                    <el-table-column
-                        prop="event_type"
-                        label="event_type">
-                    </el-table-column>
+                        :data="tableData"
+                        style="width: 100%">
+                        <el-table-column
+                            prop="datetime"
+                            label="date">
+                        </el-table-column>
+                        <el-table-column
+                            prop="address"
+                            label="address">
+                        </el-table-column>
+                        <el-table-column
+                            prop="task"
+                            label="task">
+                        </el-table-column>
+                        <el-table-column
+                            prop="event_type"
+                            label="event_type">
+                        </el-table-column>
                     </el-table>
                </div>
            </div>
@@ -59,7 +59,7 @@
 </template>
 
 <script>
-    import {getSkill,getSkillId,getUser,getAddUser,postRelation,getRelation,getDapp,getReferral} from '../../api/index';
+    import {getSkill,getSkillId,getUser,getAddUser,getRelation,getDapp,getReferral} from '../../api/index';
     import detectEthereumProvider from "@metamask/detect-provider";
     import Web3 from "web3";
     import { mapState } from "vuex";
@@ -67,7 +67,7 @@
         data() {
             return {
                 current:0,
-                ntfs:[
+                nfts:[
                     "ETH",
                     "BSC",
                     "DeFi",
@@ -89,8 +89,10 @@
         },
         components: {
         },
-        created(){
-            this.getSkillList()
+        async created() {
+            this.currentAccount = this.$route.params.currentAccount;
+            this.getSkillList();
+            this.getRelations();
         },
         watch:{
             current:{
@@ -104,24 +106,26 @@
             }
         },
         async mounted() {
+            /*
             this.provider = await detectEthereumProvider();
             console.log(this.provider);
             console.log(Web3.givenProvider);
             if (this.provider) {
-            this.web3 = new Web3(Web3.givenProvider);
-            await this.provider
-                .request({ method: "eth_accounts" })
-                .then(this.handleAccountsChanged)
-                .catch((err) => {
-                console.error(err);
-                });
-            if (this.provider.chainId === "0x1") {
-                console.log('conneting')
-            }
+                this.web3 = new Web3(Web3.givenProvider);
+                await this.provider
+                    .request({ method: "eth_accounts" })
+                    .then(this.handleAccountsChanged)
+                    .catch((err) => {
+                        console.error(err);
+                    });
+                if (this.provider.chainId === "0x1") {
+                    console.log('conneting')
+                }
             } else {
-            console.log("Please install MetaMask!");
+                console.log("Please install MetaMask!");
             }
             console.log(this.web3);
+            */
         },
         methods:{
             // getReferral
@@ -133,12 +137,11 @@
             },
             // getDapp
             async getDappFun(){
-                let res = await getDapp(this.currentAccount)
+                const res = await getDapp(this.currentAccount)
                 if(res.successed && res.errcode==0){
                     this.tableData = res.data;
                 }
             },
-            // 获取人员相关信息
             async getRelations(){
                 let res = await getRelation(this.currentAccount);
                 if(res.successed && res.errcode==0){
@@ -156,7 +159,6 @@
                if(res.successed){
                 this.skill = res.data
                }
-               console.log(this.skill)
             },
             async getSkillId(id){
                 let res = await getSkillId(id);
@@ -168,7 +170,6 @@
                 } else if (accounts[0] !== this.currentAccount) {
                     this.currentAccount = this.web3.utils.toChecksumAddress(accounts[0]);
                     this.isUser(this.currentAccount)
-                    this.getRelations();
                 }
             },
             connect() {
@@ -186,7 +187,6 @@
             },
             async isUser(account){
                 let res = await getUser(account);
-                console.log(res)
                 if(res.successed && res.errcode==0){
                     this.user = res.data
                 }else{
@@ -234,13 +234,13 @@
 .active{
     border-bottom: 3px solid #000000;
 }
-.user-ntfs{
+.user-nfts{
     display: flex;
     justify-content: center;
     align-items: center;
     height: 500px;
 }
-.ntfs{
+.nfts{
     width: 100px;
     height: 100px;
     border-radius: 50%;
