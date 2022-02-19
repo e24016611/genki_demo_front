@@ -29,6 +29,9 @@ jobs:
       - uses: borales/actions-yarn@v2.3.0
         with:
           cmd: install # will run `yarn install` command
+      - uses: borales/actions-yarn@v2.3.0
+        with:
+          cmd: build # will run `yarn build` command
       - uses: azure/login@v1
         with:
           client-id: 6fbd6204-73c7-4720-98f5-d1823fe922e3
